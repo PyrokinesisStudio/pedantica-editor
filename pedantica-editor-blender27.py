@@ -16,7 +16,7 @@ from random import randint
 
 #change this to your username FIXME
 pedanticaPath="/home/robin/pedantica/"
-entitiesPath=pedanticaPath+"tools/editor/entities/"
+entitiesPath=pedanticaPath+"tools/pedantica-editor/entities/"
 
 initialized=False
 
@@ -44,7 +44,7 @@ def checkInitialized():
 		for e in entities:
 			filepath=entitiesPath+e.blendFile
 
-			with bpy.data.libraries.load(filepath,True) as (data_from, data_to):
+			with bpy.data.libraries.load(filepath,True,True) as (data_from, data_to):
 				data_to.groups = data_from.groups
 
 
