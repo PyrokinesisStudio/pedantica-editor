@@ -13,9 +13,10 @@ from bpy.props import *
 import bpy_extras
 import mathutils
 from random import randint
+import getpass #for getuser
 
-#change this to your username FIXME
-pedanticaPath="/home/robin/pedantica/"
+#change this to reflect automatically correct pedantica path FIXME
+pedanticaPath="/home/"+getpass.getuser()+"/pedantica/"
 entitiesPath=pedanticaPath+"tools/pedantica-editor/entities/"
 
 initialized=False
