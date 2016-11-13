@@ -22,7 +22,7 @@ entitiesPath=pedanticaPath+"tools/pedantica-editor/entities/"
 initialized=False
 
 class Entity:
-	'Entity class for all move:able entitys in a level, loaded from separate blend files'
+	'Entity class for all movable entitys in a level, loaded from separate blend files'
 	def __init__(self,title,name,blendFile):
 		self.title=title #title is the pronounced entity name in english
 		self.name=name #name is the collapsed entity name
@@ -57,6 +57,7 @@ def addEntity(entityName):
 	instanceName=""
 	done=False
 
+	#Generate unique entity name
 	while not done:
 		instanceName=entityName+"."+str(randint(1,999))
 
@@ -99,7 +100,7 @@ class export_leveldata(bpy.types.Operator):
 				o.hide=True
 
 		#EXPORT STATIC MESH AS OBJ
-		bpy.ops.export_scene.obj(filepath=levelFilename,use_triangles=True)
+		bpy.ops.export_scene.obj(filepath=levelFilename,use_triangles=True,path_mode="STRIP")
 
 		#UNHIDE ENEMIES
 		for o in bpy.data.objects:
@@ -111,16 +112,12 @@ class export_leveldata(bpy.types.Operator):
 			f.write('''
 # END OF LEVEL MESH
 
+//music audio/dark-clouds.flac
+
+
 # BEGIN LEVEL ENTITIES
 
 Entity models/sink.obj 3.0 0.5 1.0
-Entity models/lv1.obj 0.0 0.0 0.0
-Entity models/lv1-wall.obj 20.0 20.0 0.0
-Entity models/lv1-wall-full.obj 20.0 20.0 0.0
-Entity models/key_old.obj 20.0 20.0 0.0
-Entity models/key_complex.obj 20.0 20.0 0.0
-Entity models/door-old-key.obj 20.0 20.0 0.0
-Entity models/door-complex-key.obj 20.0 20.0 0.0
 Entity models/floor.obj 20.0 0.0 0.0
 Entity models/floor5.obj 20.0 0.0 0.0
 Entity models/traffic_light_pedestrian.obj 5.0 4.0 5.0
@@ -130,24 +127,24 @@ Entity models/gun_shot.obj 0.0 0.0 0.0
 Entity models/gun.obj 0.0 0.0 0.0
 Entity models/knife.obj 0.0 0.0 0.0
 Entity models/gun_display.obj 0.0 0.0 0.0
+Entity models/yield_anarchy.obj 0.0 0.0 0.0
 
-//music audio/dark-clouds.flac
+# Load FlyingEnemy models before using them
+Entity models/tentacle.obj 24.0 3.0 0.0
+Entity models/flyingenemy-spikes.obj 21.0 3.0 2.0
 
 # BEGIN LEVEL ENEMYS
 
-# Define flying enemy before using it
-Entity models/tentacle.obj 24.0 3.0 0.0
-Entity models/flyingenemy-spikes.obj 21.0 3.0 2.0
 ''')
 
 			#APPEND ENEMY POSITIONS
 			for o in bpy.data.objects:
 				if "EnemyFlying." in str(o):
 					f.write("EnemyFlying "+o.name+" ")
-					loc=o.location*bpy_extras.io_utils.axis_conversion(to_forward='Z',to_up='Y')	
+					loc=o.location*bpy_extras.io_utils.axis_conversion(to_forward='Z',to_up='-Y')	
 					f.write(str(loc.x)+" "+str(loc.y)+" "+str(loc.z)+" ")
 					rot=mathutils.Vector(o.rotation_euler)
-					rot=rot*bpy_extras.io_utils.axis_conversion(to_forward='Z',to_up='Y')
+					rot=rot*bpy_extras.io_utils.axis_conversion(to_forward='Z',to_up='-Y')
 					f.write(str(rot.x)+" "+str(rot.y)+" "+str(rot.z))
 					f.write("\n")
 
