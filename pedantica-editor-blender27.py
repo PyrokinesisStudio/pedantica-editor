@@ -85,6 +85,14 @@ class add_flying_enemy(bpy.types.Operator):
 		return {'FINISHED'}
 
 
+def fixedLocation(o):
+	return o.location*bpy_extras.io_utils.axis_conversion(to_forward='Z',to_up='-Y')
+
+def fixedRotation(o):
+	rotation=o.rotation_euler
+
+	return rotation
+
 #EXPORT PEDANTICA LEVEL TO FILE
 class export_leveldata(bpy.types.Operator):
 	'''Exports the current scene as a Pedantica level'''
@@ -114,7 +122,17 @@ class export_leveldata(bpy.types.Operator):
 
 //music audio/dark-clouds.flac
 
+''')
 
+			#Write Player Camera Spawn Position
+			for o in bpy.data.objects:
+				if "PlayerPositionSpawn" in str(o):
+					loc=fixedLocation(o)
+					rot=fixedRotation(o)
+					f.write("PlayerPositionSpawn "+str(loc.x)+" "+str(loc.y)+" "+str(loc.z)+" "+str(rot.z)+" "+str(rot.x))
+					break
+
+			f.write('''
 # BEGIN LEVEL ENTITIES
 
 Entity models/sink.obj 3.0 0.5 1.0
@@ -141,10 +159,9 @@ Entity models/flyingenemy-spikes.obj 21.0 3.0 2.0
 			for o in bpy.data.objects:
 				if "EnemyFlying." in str(o):
 					f.write("EnemyFlying "+o.name+" ")
-					loc=o.location*bpy_extras.io_utils.axis_conversion(to_forward='Z',to_up='-Y')	
+					loc=fixedLocation(o)
 					f.write(str(loc.x)+" "+str(loc.y)+" "+str(loc.z)+" ")
-					rot=mathutils.Vector(o.rotation_euler)
-					rot=rot*bpy_extras.io_utils.axis_conversion(to_forward='Z',to_up='-Y')
+					rot=fixedRotation(o)
 					f.write(str(rot.x)+" "+str(rot.y)+" "+str(rot.z))
 					f.write("\n")
 
