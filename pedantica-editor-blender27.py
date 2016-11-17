@@ -167,40 +167,32 @@ class export_leveldata(bpy.types.Operator):
 					break
 
 			f.write('''
-# BEGIN LEVEL ENTITIES
+# BEGIN LEVEL ENTITIES:
 
 ''')
 
 			#APPEND ENTITY POSITIONS
 			for o in bpy.data.objects:
 				for e in entities:
-					if e.name in str(o.name) and e.name is not "EnemyFlying":
+					if str(e.name+".") in str(o.name) and e.name is not "EnemyFlying":
 						#rot=fixedRotation(o)
 						#f.write(str(rot.x)+" "+str(rot.y)+" "+str(rot.z))
 						loc=fixedLocation(o)
 						f.write("Entity models/"+e.name+".obj "+str(loc.x)+" "+str(loc.y)+" "+str(loc.z)+"\n")
 
 			f.write('''
-//Entity models/Sink.obj 3.0 0.5 1.0
-//Entity models/floor.obj 20.0 0.0 0.0
-//Entity models/floor5.obj 20.0 0.0 0.0
-//Entity models/TrafficYieldAnarchy.obj 5.0 0.1 5.0
-//Entity models/TrafficLight.obj 9.0 0.1 5.0
-//Entity models/mask_guy.obj 1.0 4.0 5.0
-//Entity models/colt25.obj 0.0 0.0 0.0
-//Entity models/knife.obj 0.0 0.0 0.0
-
+#Loading some models manually
+Entity models/colt25.obj 0.0 0.0 0.0
+Entity models/knife.obj 0.0 0.0 0.0
 Entity models/gun_shot.obj 0.0 0.0 0.0
 Entity models/gun.obj 0.0 0.0 0.0
 Entity models/gun_display.obj 0.0 0.0 0.0
 
-
-
-# Load FlyingEnemy models before using them
+# Load EnemyFlying models before using them
 Entity models/tentacle.obj 24.0 3.0 0.0
 Entity models/flyingenemy-spikes.obj 21.0 3.0 2.0
 
-# BEGIN LEVEL ENEMIES
+# BEGIN LEVEL ENEMIES:
 
 ''')
 
