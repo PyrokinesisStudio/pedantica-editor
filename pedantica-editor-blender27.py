@@ -38,8 +38,8 @@ from os import listdir
 from os.path import isfile, join, splitext
 
 #change this to reflect automatically correct pedantica path FIXME
-pedanticaPath="/home/"+getpass.getuser()+"/pedantica/"
-entitiesPath=pedanticaPath+"tools/pedantica-editor/entities/"
+pedanticaPath="/raidLagring/pedantica/pedantica/" #"/home/"+getpass.getuser()+"/pedantica/"
+entitiesPath="/raidLagring/arkivet/privat/speldev/pedantica/engine-tools/pedantica-editor/entities/" #pedanticaPath+"tools/pedantica-editor/entities/"
 staticentitiesPath=entitiesPath+"static/"
 
 initialized=False
@@ -128,26 +128,27 @@ class export_leveldata(bpy.types.Operator):
 	bl_idname = "mesh.export_pedantica_level"
 	bl_label = "Pedantica Export Level"
 
-
 	def execute(self, context):
-		levelFilename=pedanticaPath+"engine/assets/maps/prison02.level"
+		checkInitialized()
+
+		levelFilename=pedanticaPath+"game/maps/prison03.level"
 
 		global entities
 
-		#HIDE ENEMIES/ENTITIES
+		#First select everything
+		bpy.ops.object.select_all(action='SELECT')
+
+		#Then deselect ENEMIES/ENTITIES
 		for o in bpy.data.objects:
 			for e in entities:
 				if e.name in str(o.name):
-					o.hide=True
+					o.select=False
 
 		#EXPORT STATIC MESH AS OBJ
-		bpy.ops.export_scene.obj(filepath=levelFilename,use_triangles=True,path_mode="STRIP")
+		bpy.ops.export_scene.obj(filepath=levelFilename,use_triangles=True,use_selection=True,path_mode="STRIP")
 
-		#UNHIDE ENEMIES/ENTITIES
-		for o in bpy.data.objects:
-			for e in entities:
-				if e.name in str(o.name):
-					o.hide=False
+		#Deselect everything
+		bpy.ops.object.select_all(action='DESELECT')
 
 		#BEGIN TO APPEND MORE DATA TO THE FILE
 		with open(levelFilename,"a") as f:
@@ -241,11 +242,11 @@ class SimpleOperator(bpy.types.Operator):
 
 def register():
 	bpy.utils.register_module(__name__)
-	bpy.utils.register_class(SimpleOperator)
+
 
 def unregister():
 	bpy.utils.unregister_module(__name__)
-	bpy.utils.unregister_class(SimpleOperator)
+
 
 if __name__ == "__main__":
 	register()
